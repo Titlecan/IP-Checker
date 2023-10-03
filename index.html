@@ -14,6 +14,9 @@
             padding: 8px;
             text-align: left;
         }
+        th:first-child {
+            display: none; /* 隐藏参数名列 */
+        }
         @media (max-width: 768px) {
             /* 在小屏幕上，表格的宽度自适应 */
             table {
@@ -26,54 +29,44 @@
     <h1>本地IP检测工具</h1>
     <table id="data-table">
         <tr>
-            <th>参数名</th>
-            <th>数据</th>
-            <th>解释</th>
+            <th>参数解释</th>
+            <th>详细数据</th>
         </tr>
         <tr>
-            <td>ip</td>
-            <td></td>
             <td>用户IP地址</td>
+            <td></td>
         </tr>
         <tr>
-            <td>uag</td>
-            <td></td>
             <td>用户代理字符串</td>
+            <td></td>
         </tr>
         <tr>
-            <td>loc</td>
-            <td></td>
             <td>用户所在地区</td>
+            <td></td>
         </tr>
         <tr>
-            <td>visit_scheme</td>
-            <td></td>
             <td>访问协议</td>
+            <td></td>
         </tr>
         <tr>
-            <td>http</td>
-            <td></td>
             <td>HTTP协议版本</td>
+            <td></td>
         </tr>
         <tr>
-            <td>tls</td>
-            <td></td>
             <td>TLS版本</td>
+            <td></td>
         </tr>
         <tr>
-            <td>ts</td>
-            <td></td>
             <td>时间戳</td>
+            <td></td>
         </tr>
         <tr>
-            <td>colo</td>
-            <td></td>
             <td>Cloudflare节点</td>
+            <td></td>
         </tr>
         <tr>
-            <td>warp</td>
-            <td></td>
             <td>是否使用WARP服务</td>
+            <td></td>
         </tr>
     </table>
 
@@ -96,10 +89,10 @@
                     if (parts.length === 2) {
                         const paramName = parts[0];
                         const paramValue = parts[1];
-                        // 查找匹配的表格行，根据参数名填充数据
-                        const row = dataTable.querySelector(`tr td:contains("${paramName}")`);
-                        if (row) {
-                            row.nextElementSibling.textContent = paramValue;
+                        // 查找匹配的表格行，根据行索引填充数据
+                        const rowIndex = Array.from(dataTable.rows).findIndex(row => row.cells[0].textContent === paramName);
+                        if (rowIndex >= 0) {
+                            dataTable.rows[rowIndex].cells[1].textContent = paramValue;
                         }
                     }
                 });
