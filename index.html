@@ -2,66 +2,6 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>本地IP检测工具</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
-</head>
-<body>
-    <h1>本地IP检测工具</h1>
-    <table id="data-table">
-        <tr>
-            <th>参数名</th>
-            <th>解释</th>
-            <th>数据</th>
-        </tr>
-    </table>
-
-    <p id="additional-info">后续补充介绍</p>
-
-    <script>
-        // 获取数据表格元素
-        const dataTable = document.getElementById('data-table');
-
-        // 异步加载第一个页面的内容
-        fetch('https://titlecan.cn/cdn-cgi/trace')
-            .then(response => response.text())
-            .then(data => {
-                // 将数据按行分割
-                const lines = data.trim().split('\n');
-
-                // 遍历每行数据，创建表格行并填充数据
-                lines.forEach(line => {
-                    const parts = line.trim().split('=');
-                    if (parts.length === 2) {
-                        const paramName = parts[0];
-                        const paramValue = parts[1];
-                        const newRow = dataTable.insertRow();
-                        const paramNameCell = newRow.insertCell(0);
-                        const paramValueCell = newRow.insertCell(1);
-                        paramNameCell.textContent = paramName;
-                        paramValueCell.textContent = paramValue;
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('获取数据时出错：', error);
-            });
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>本地IP检测工具</title>
     <style>
@@ -90,20 +30,58 @@
             <th>数据</th>
             <th>解释</th>
         </tr>
+        <tr>
+            <td>ip</td>
+            <td></td>
+            <td>用户IP地址</td>
+        </tr>
+        <tr>
+            <td>uag</td>
+            <td></td>
+            <td>用户代理字符串</td>
+        </tr>
+        <tr>
+            <td>loc</td>
+            <td></td>
+            <td>用户所在地区</td>
+        </tr>
+        <tr>
+            <td>visit_scheme</td>
+            <td></td>
+            <td>访问协议</td>
+        </tr>
+        <tr>
+            <td>http</td>
+            <td></td>
+            <td>HTTP协议版本</td>
+        </tr>
+        <tr>
+            <td>tls</td>
+            <td></td>
+            <td>TLS版本</td>
+        </tr>
+        <tr>
+            <td>ts</td>
+            <td></td>
+            <td>时间戳</td>
+        </tr>
+        <tr>
+            <td>colo</td>
+            <td></td>
+            <td>Cloudflare节点</td>
+        </tr>
+        <tr>
+            <td>warp</td>
+            <td></td>
+            <td>是否使用WARP服务</td>
+        </tr>
     </table>
-
-    <div id="ip-ua-container">
-        <h2>IP地址和用户代理字符串</h2>
-        <textarea id="ip-ua-textarea" rows="10" readonly></textarea>
-    </div>
 
     <p id="additional-info">后续补充介绍</p>
 
     <script>
         // 获取数据表格元素
         const dataTable = document.getElementById('data-table');
-        // 获取IP地址和用户代理字符串的文本框
-        const ipUATextarea = document.getElementById('ip-ua-textarea');
 
         // 异步加载第一个页面的内容
         fetch('https://titlecan.cn/cdn-cgi/trace')
@@ -112,23 +90,19 @@
                 // 将数据按行分割
                 const lines = data.trim().split('\n');
 
-                // 遍历每行数据，创建表格行并填充数据
+                // 遍历每行数据，填充表格数据
                 lines.forEach(line => {
                     const parts = line.trim().split('=');
                     if (parts.length === 2) {
                         const paramName = parts[0];
                         const paramValue = parts[1];
-                        const newRow = dataTable.insertRow();
-                        const paramNameCell = newRow.insertCell(0);
-                        const paramValueCell = newRow.insertCell(1);
-                        paramNameCell.textContent = paramName;
-                        paramValueCell.textContent = paramValue;
+                        // 查找匹配的表格行，根据参数名填充数据
+                        const row = dataTable.querySelector(`tr td:contains("${paramName}")`);
+                        if (row) {
+                            row.nextElementSibling.textContent = paramValue;
+                        }
                     }
                 });
-
-                // 提取IP地址和用户代理字符串并填充文本框
-                const ipUAData = lines.slice(0, 2).join('\n');
-                ipUATextarea.textContent = ipUAData;
             })
             .catch(error => {
                 console.error('获取数据时出错：', error);
