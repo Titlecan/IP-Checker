@@ -58,3 +58,81 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地IP检测工具</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        @media (max-width: 768px) {
+            /* 在小屏幕上，表格的宽度自适应 */
+            table {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>本地IP检测工具</h1>
+    <table id="data-table">
+        <tr>
+            <th>参数名</th>
+            <th>数据</th>
+            <th>解释</th>
+        </tr>
+    </table>
+
+    <div id="ip-ua-container">
+        <h2>IP地址和用户代理字符串</h2>
+        <textarea id="ip-ua-textarea" rows="10" readonly></textarea>
+    </div>
+
+    <p id="additional-info">后续补充介绍</p>
+
+    <script>
+        // 获取数据表格元素
+        const dataTable = document.getElementById('data-table');
+        // 获取IP地址和用户代理字符串的文本框
+        const ipUATextarea = document.getElementById('ip-ua-textarea');
+
+        // 异步加载第一个页面的内容
+        fetch('https://titlecan.cn/cdn-cgi/trace')
+            .then(response => response.text())
+            .then(data => {
+                // 将数据按行分割
+                const lines = data.trim().split('\n');
+
+                // 遍历每行数据，创建表格行并填充数据
+                lines.forEach(line => {
+                    const parts = line.trim().split('=');
+                    if (parts.length === 2) {
+                        const paramName = parts[0];
+                        const paramValue = parts[1];
+                        const newRow = dataTable.insertRow();
+                        const paramNameCell = newRow.insertCell(0);
+                        const paramValueCell = newRow.insertCell(1);
+                        paramNameCell.textContent = paramName;
+                        paramValueCell.textContent = paramValue;
+                    }
+                });
+
+                // 提取IP地址和用户代理字符串并填充文本框
+                const ipUAData = lines.slice(0, 2).join('\n');
+                ipUATextarea.textContent = ipUAData;
+            })
+            .catch(error => {
+                console.error('获取数据时出错：', error);
+            });
+    </script>
+</body>
+</html>
