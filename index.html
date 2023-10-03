@@ -10,12 +10,15 @@
             border-collapse: collapse;
         }
         th, td {
-            border: 1px solid #ccc;
+            border: 2px solid #000;
             padding: 8px;
-            text-align: left;
         }
-        th:first-child {
-            display: none; /* 隐藏参数名列 */
+        th {
+            font-weight: bold;
+            text-align: center;
+        }
+        td {
+            text-align: left;
         }
         @media (max-width: 768px) {
             /* 在小屏幕上，表格的宽度自适应 */
@@ -30,7 +33,7 @@
     <table id="data-table">
         <tr>
             <th>参数解释</th>
-            <th>详细数据</th>
+            <th>参数数据</th>
         </tr>
         <tr>
             <td>用户IP地址</td>
@@ -73,6 +76,19 @@
     <p id="additional-info">后续补充介绍</p>
 
     <script>
+        // 映射参数名和表格行的关系
+        const paramMap = {
+            'ip': 0,
+            'uag': 1,
+            'loc': 2,
+            'visit_scheme': 3,
+            'http': 4,
+            'tls': 5,
+            'ts': 6,
+            'colo': 7,
+            'warp': 8
+        };
+
         // 获取数据表格元素
         const dataTable = document.getElementById('data-table');
 
@@ -89,9 +105,9 @@
                     if (parts.length === 2) {
                         const paramName = parts[0];
                         const paramValue = parts[1];
-                        // 查找匹配的表格行，根据行索引填充数据
-                        const rowIndex = Array.from(dataTable.rows).findIndex(row => row.cells[0].textContent === paramName);
-                        if (rowIndex >= 0) {
+                        // 查找匹配的表格行，根据映射关系填充数据
+                        const rowIndex = paramMap[paramName];
+                        if (rowIndex !== undefined) {
                             dataTable.rows[rowIndex].cells[1].textContent = paramValue;
                         }
                     }
